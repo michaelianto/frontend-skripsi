@@ -16,7 +16,7 @@
           <th scope="col">Course Name</th>
           <th scope="col">Course Price</th>
           <th scope="col">Description</th>
-          <th scope="col">Status</th>
+          <th scope="col" v-if="this.user.role_id == 1">Status</th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -26,8 +26,9 @@
           <td>{{ vacancy.course.courseName }}</td>
           <td>{{ vacancy.course.coursePrice }}</td>
           <td>{{ vacancy.description }}</td>
-          <td v-if="vacancy.isActive == true"><span class="badge badge-success">Active</span></td>
-          <td v-else><span class="badge badge-secondary">Not Active</span></td>
+          <td v-if="vacancy.isActive == true && this.user.role_id == 1"><span class="badge badge-success">Active</span></td>
+          <td v-else-if="vacancy.isActive == false && this.user.role_id == 1"><span class="badge badge-secondary">Not Active</span></td>
+          <td v-else><button class="btn btn-primary" @click="handleApply(vacancy)"><i class="fa-solid fa-plus"></i></button></td>
         </tr>
       </tbody>
     </table>
@@ -80,6 +81,15 @@ const GET_VACANCIES_QUERY_FOR_TEACHER = gql`
   }
 `
 
+const APPLY_VACANCY_MUTATION = gql`
+  mutation createJobApplication($request: CreateJobApplicationRequest!){
+    createJobApplication(request: $request){
+      jobVacancyId
+      approvalStatus
+    }
+  }
+`
+
 export default {
   components: {
     NavbarComponent
@@ -120,6 +130,24 @@ export default {
       }).then((data) => {
         this.vacancies = data.data.getJobVacancies
       })
+    }
+  },
+  methods: {
+    handleApply(vacancy){
+      var request = {
+        'jobVacancyId': vacancy.id,
+        'teacherId': this.user.id
+      }
+      if(confirm("Are you sure want to apply this vacancy?")){
+        this.$apollo.mutate({
+          mutation: APPLY_VACANCY_MUTATION,
+          variables: {
+            request: request
+          }
+        })
+        alert("Apply vacancy success")
+        // this.$router.push({ name: 'application' })
+      }
     }
   }
 }
