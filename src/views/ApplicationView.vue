@@ -129,6 +129,14 @@ const APPROVED_APPLICATION_MUTATION = gql`
   }
 `
 
+const CHANGE_JOB_VACANCY_STATUS_MUTATION = gql`
+  mutation updateJobVacancy($request: UpdateJobVacancyRequest!){
+    updateJobVacancy(request: $request){
+      id
+    }
+  }
+`
+
 
 export default {
   components: {
@@ -213,8 +221,20 @@ export default {
           variables: {
             request: request
           }
+        }).then(() => {
+          var newRequest = {
+            'id': application.jobVacancyId,
+            'description': application.jobVacancy.description,
+            'isActive': 'false'
+          }
+          this.$apollo.mutate({
+            mutation: CHANGE_JOB_VACANCY_STATUS_MUTATION,
+            variables: {
+              request: newRequest
+            }
+          })
+          this.$router.go(0);
         })
-        this.$router.go(0);
       }
     }
   }

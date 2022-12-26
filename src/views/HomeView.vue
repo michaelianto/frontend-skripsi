@@ -11,7 +11,6 @@
           <th scope="col" v-if="this.user.role_id == 1">Teacher</th>
           <th scope="col" v-else>Student</th>
           <th scope="col">Status</th>
-          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>

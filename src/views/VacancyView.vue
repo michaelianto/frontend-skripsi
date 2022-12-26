@@ -29,6 +29,11 @@
           <td v-if="vacancy.isActive == true && this.user.role_id == 1"><span class="badge badge-success">Active</span></td>
           <td v-else-if="vacancy.isActive == false && this.user.role_id == 1"><span class="badge badge-secondary">Not Active</span></td>
           <td v-else><button class="btn btn-primary" @click="handleApply(vacancy)"><i class="fa-solid fa-plus"></i></button></td>
+        
+          <td v-if="vacancy.isActive == true && this.user.role_id == 1">
+            <button class="btn btn-danger" @click="deleteVacancy(vacancy)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+          </td>
+          <td v-else></td>
         </tr>
       </tbody>
     </table>
@@ -90,6 +95,12 @@ const APPLY_VACANCY_MUTATION = gql`
   }
 `
 
+const DELETE_VACANCY_MUTATION = gql`
+  mutation deleteJobVacancy($request: DeleteJobVacancyRequest!){
+    deleteJobVacancy(request: $request)
+  }
+`
+
 export default {
   components: {
     NavbarComponent
@@ -146,7 +157,22 @@ export default {
           }
         })
         alert("Apply vacancy success")
-        // this.$router.push({ name: 'application' })
+        this.$router.push({ name: 'application' })
+      }
+    },
+    deleteVacancy(vacancy){
+      var request = {
+        'id': vacancy.id
+      }
+      if(confirm("Are you sure want to delete this vacancy?")){
+        this.$apollo.mutate({
+          mutation: DELETE_VACANCY_MUTATION,
+          variables: {
+            request: request
+          }
+        })
+        alert("Delete vacancy success")
+        this.$router.go(0);
       }
     }
   }
