@@ -29,13 +29,20 @@
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">{{ course.courseName }}</h5>
+                  <h5 class="modal-title font-weight-bold" id="exampleModalLabel">{{ course.courseName }}</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div class="modal-body text-left">
                   <p>{{ course.courseDescription }}</p>
+                  <p v-if="course.chapters.length != 0">Course's Chapters : </p>
+                  <ol>
+                    <li v-for="chapter in course.chapters" :key="chapter.id">
+                      <p class="chapter-name">{{ chapter.name }}</p>
+                      <p> {{ chapter.detail }}</p>
+                    </li>
+                  </ol>
                   <b>${{ course.coursePrice}}</b>
                 </div>
               </div>
@@ -52,13 +59,18 @@ import NavbarComponent from '@/components/Navbar.vue'
 import gql from 'graphql-tag'
 
 const GET_COURSES_QUERY = gql`
-  query{
+  query getCourses{
     getCourses{
       id
       courseName
       courseDescription
       coursePrice
       createdBy
+      chapters{
+        id
+        name
+        detail
+      }
     }
   }
 `
@@ -83,3 +95,10 @@ export default{
 }
 
 </script>
+
+<style>
+.chapter-name{
+  font-size: 20px;
+}
+
+</style>
