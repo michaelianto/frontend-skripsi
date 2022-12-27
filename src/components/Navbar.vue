@@ -47,7 +47,7 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <router-link to="profile" class="dropdown-item"><i class="fa-solid fa-user"></i>  Profile</router-link>
           <div class="dropdown-divider"></div>
-          <router-link to="notification" class="dropdown-item"><i class="fa-solid fa-bell"></i>  Notifications <span class="badge badge-danger">8</span></router-link>
+          <router-link to="notification" class="dropdown-item"><i class="fa-solid fa-bell"></i>  Notifications <span class="badge badge-danger" v-if="total_notifications != 0">{{ total_notifications }}</span></router-link>
           <div class="dropdown-divider"></div>
           <button class="dropdown-item" @click="logout"><i class="fa-solid fa-right-from-bracket"></i>  Log Out </button>
         </div>
@@ -61,20 +61,51 @@
 </template>
 
 <script>
+import gql from 'graphql-tag'
+
+const GET_NOTIFICATIONS_QUERY = gql`
+  query($id: ID!){
+    getNotifications(id: $id){
+      id
+      user{
+        id
+        username
+      }
+      content
+      read
+    }
+  }
+`
+
+
 export default{
   name: "NavbarComponent",
   data() {
     return{
-      user: ''
+      user: '',
+      total_notifications: '',
+      id: JSON.parse(localStorage.getItem('user')).id
     }
   },
   mounted(){
     let user = localStorage.getItem('user')
     this.user = JSON.parse(user)
+
+    this.$apollo.query({
+      query: GET_NOTIFICATIONS_QUERY,
+      variables: {
+        id: this.id
+      },
+      fetchPolicy: 'no-cache'
+    }).then((data) => {
+      var notifications = data.data.getNotifications;
+      this.total_notifications =  notifications.filter(function (el) {
+                                    return el.read == false
+                                  }).length;
+    })
   },
   methods: {
     logout(){
-      console.log("TESTING")
       localStorage.clear();
       this.$router.push({ name: 'login' })
     }
