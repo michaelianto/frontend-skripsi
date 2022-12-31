@@ -2,7 +2,7 @@
   <NavbarComponent />
   <div class="col-6 mr-auto ml-auto p-3">
     <form @submit.prevent="handleAddVacancy" class="text-left">
-      <h3 class="text-center mt-3">Add Course</h3>
+      <h3 class="text-center mt-3">Add Vacancy</h3>
       <div class="form-group">
         <label for="inputRole">Course</label>
         <select class="form-control" id="inputRole" v-model="newVacancy.courseId">

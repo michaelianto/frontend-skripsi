@@ -28,7 +28,10 @@
           <router-link to="course" class="nav-link">Courses</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="vacancy" class="nav-link">Vacancy</router-link>
+          <router-link to="all-vacancy" class="nav-link">All Vacancy</router-link>
+        </li>
+        <li class="nav-item" v-if="user.role_id == 1">
+          <router-link to="vacancy" class="nav-link">Owned Vacancy</router-link>
         </li>
         <li class="nav-item">
           <router-link to="application" class="nav-link" href="#">Applications</router-link>

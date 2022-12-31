@@ -3,7 +3,7 @@
   <div class="container-fluid pt-3">
     <div class="row">
       <div class="col-6">
-        <h3 class="ml-4 text-left">All Application</h3>
+        <h3 class="ml-4 text-left">Owned Application</h3>
       </div>
     </div>
     <table class="table m-3">
@@ -216,6 +216,7 @@ export default {
           'jobVacancyId': application.jobVacancyId,
           'teacherId': application.teacher.id
         }
+        console.log(request)
         this.$apollo.mutate({
           mutation: APPROVED_APPLICATION_MUTATION,
           variables: {

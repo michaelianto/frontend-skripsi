@@ -3,7 +3,7 @@
   <div class="container-fluid pt-3">
     <div class="row">
       <div class="col-6">
-        <h3 class="ml-4 text-left">Owned Vacancy</h3>
+        <h3 class="ml-4 text-left">All Vacancy</h3>
       </div>
       <div class="col-6 text-right" v-if="this.user.role_id == 1">
         <router-link to="add-vacancy" class="btn btn-primary mr-4"><i class="fa-solid fa-plus"></i> Add Vacancy</router-link>
@@ -30,9 +30,9 @@
           <td v-else-if="vacancy.isActive == false && this.user.role_id == 1"><span class="badge badge-secondary">Not Active</span></td>
           <td v-else><button class="btn btn-primary" @click="handleApply(vacancy)"><i class="fa-solid fa-plus"></i></button></td>
         
-          <td v-if="vacancy.isActive == true && this.user.role_id == 1">
+          <td v-if="vacancy.isActive == true && this.user.role_id == 1 && vacancy.student.id == this.user.id">
             <button class="btn btn-secondary mr-2" @click="updateVacancy(vacancy)"><i class="fa fa-pencil" aria-hidden="true"></i></button>
-            <button class="btn btn-danger" @click="deleteVacancy(vacancy)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+            <button class="btn btn-danger" @click="deleteVacancy(vacancy)"><i class="fa fa-trash" aria-hidden="true"></i></button>          
           </td>
           <td v-else></td>
         </tr>
@@ -44,27 +44,6 @@
 <script>
 import NavbarComponent from '@/components/Navbar.vue'
 import gql from 'graphql-tag'
-
-const GET_VACANCIES_QUERY_FOR_STUDENT = gql`
-  query($id: ID!){
-    getJobVacancyByUser(id: $id){
-      id
-      course{
-        id
-        courseName
-        courseDescription
-        coursePrice
-      }
-      student{
-        id
-        username	
-        email
-      }
-      description
-      isActive
-    }
-  }
-`
 
 const GET_VACANCIES_QUERY_FOR_TEACHER = gql`
   query getJobVacancies{
@@ -106,18 +85,6 @@ export default {
   components: {
     NavbarComponent
   },
-  // apollo: {
-  //   vacancies: {
-  //     query: GET_VACANCIES_QUERY,
-  //     variables() {
-  //       return{
-  //         id: this.user.id
-  //       }
-  //     },
-  //     update: data => data.getJobVacancyByUser,
-  //     fetchPolicy: 'no-cache'
-  //   }
-  // },
   data(){
     return{
       user: JSON.parse(localStorage.getItem('user')),
@@ -127,13 +94,10 @@ export default {
   mounted(){
     if(this.user.role_id == 1){
       this.$apollo.query({
-        query: GET_VACANCIES_QUERY_FOR_STUDENT,
-        variables: {
-          id: this.user.id
-        },
+        query: GET_VACANCIES_QUERY_FOR_TEACHER,
         fetchPolicy: 'no-cache'
       }).then((data) => {
-        this.vacancies = data.data.getJobVacancyByUser
+        this.vacancies = data.data.getJobVacancies
       })
     }else{
       this.$apollo.query({

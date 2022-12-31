@@ -7,6 +7,8 @@ import NotificationView from '../views/NotificationView.vue'
 import CourseView from '../views/CourseView.vue'
 import AddCourseView from '../views/AddCourseView.vue'
 import VacancyView from '../views/VacancyView.vue'
+import UpdateVacancyView from '../views/UpdateVacancyView.vue'
+import AllVacancyView from '../views/AllVacancyView.vue'
 import AddVacancyView from '../views/AddVacancyView.vue'
 import ApplicationView from '../views/ApplicationView.vue'
 
@@ -52,6 +54,16 @@ const routes = [
     component: VacancyView
   },
   {
+    path: '/all-vacancy',
+    name: 'allVacancy',
+    component: AllVacancyView
+  },
+  {
+    path: '/update-vacancy',
+    name: 'updateVacancy',
+    component: UpdateVacancyView
+  },
+  {
     path: '/add-vacancy',
     name: 'add-vacancy',
     component: AddVacancyView
@@ -74,6 +86,18 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes
+})
+
+router.beforeEach(async (to) => {
+  if (
+    // make sure the user is authenticated
+    localStorage.getItem('user') == null &&
+    // ❗️ Avoid an infinite redirect
+    to.name !== 'login'
+  ) {
+    // redirect the user to the login page
+    return { name: 'login' }
+  }
 })
 
 export default router
