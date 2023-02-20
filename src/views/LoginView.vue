@@ -66,6 +66,7 @@ export default {
         }
       }).then((data) => {
         const authenticated = data.data.checkUserLogin;
+        
         // const savedData = { username: this.user.username }
         if(authenticated){
           this.$apollo.query({
