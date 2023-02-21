@@ -216,6 +216,7 @@ export default {
           'jobVacancyId': application.jobVacancyId,
           'teacherId': application.teacher.id
         }
+        console.log(request)
         this.$apollo.mutate({
           mutation: APPROVED_APPLICATION_MUTATION,
           variables: {
