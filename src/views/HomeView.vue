@@ -34,7 +34,7 @@ import NavbarComponent from '@/components/Navbar.vue'
 
 const GET_ORDERS_QUERY = gql`
   query getAllOrder($id: Int!, $size: Int, $page: Int){
-    viewOwnOrder(userId: $id, size: $size, page: $page ){
+    viewOwnOrder(userId: $id, size: $size, page: $page){
       id
       teacher{
         id
@@ -59,7 +59,6 @@ const GET_ORDERS_QUERY = gql`
         courseName
         courseDescription
         coursePrice
-        createdBy
       }
       isActive
     }
@@ -75,7 +74,9 @@ export default {
       update: data => data.viewOwnOrder,
       variables(){
         return{
-          id: this.user.id
+          id: parseInt(this.user.id),
+          page: 0,
+          size: 50
         }
       }
     }

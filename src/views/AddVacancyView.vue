@@ -45,7 +45,10 @@ const GET_COURSES_QUERY = gql`
       courseName
       courseDescription
       coursePrice
-      createdBy
+      createdBy{
+        id
+        username
+      }
     }
   }
 `
