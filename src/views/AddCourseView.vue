@@ -44,16 +44,13 @@ const ADD_COURSE_MUTATION = gql`
       courseName
       courseDescription
       coursePrice
-      createdBy{
-        id
-        name
-      }
+      createdBy
     }
   }
 `
 
 const ADD_CHAPTER_MUTATION = gql`
-  mutation createChapter($input: CreateChapter!){
+  mutation createChapter($input: CreateChapterRequest!){
     createChapter(input: $input){
       id
       name
@@ -84,8 +81,7 @@ export default{
       || this.newCourse.courseName == 0 || this.newCourse.courseDescription == 0 || this.newCourse.coursePrice == 0){
         alert("Please fill all input data")
       }else{
-        this.newCourse.createdBy = Number(JSON.parse(localStorage.getItem('user')).id)
-        console.log(this.newCourse)
+        this.newCourse.createdBy = JSON.parse(localStorage.getItem('user')).id
         this.$apollo.mutate({
           mutation: ADD_COURSE_MUTATION,
           variables: {
@@ -93,7 +89,7 @@ export default{
           }
         }).then((data) => {
           this.newCourse['id'] = data.data.insertCourse.id
-          console.log(this.newChapters.length)
+          
           for(let i = 0 ; i < this.newChapters.length ; i++){
             var chapterInput = {
               name: this.newChapters[i].name,
@@ -109,7 +105,6 @@ export default{
                 input: chapterInput
               }
             })
-            console.log("Called in new chapters")
           }
           alert("Successfully add course");
           this.$router.push({ name: 'course' })
